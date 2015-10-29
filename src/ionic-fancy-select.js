@@ -18,7 +18,7 @@ angular.module("ionic-fancy-select", ["ionic"])
       if (attrs.templateUrl) {
         return "<ng-include src=\"'" + attrs.templateUrl + "'\"></ng-include>";
       } else {
-        return  '<ion-list>' + 
+        return  '<ion-list>' +
                   '<ion-item ng-click=showItems($event)>' +
                     '{{text}}' +
                     '<span class=item-note>' +
@@ -86,7 +86,7 @@ angular.module("ionic-fancy-select", ["ionic"])
         scope.modal = $ionicModal.fromTemplate(
           '<ion-modal-view>' +
             '<ion-header-bar class="bar-positive">' +
-              '<button class="button button-positive button-icon ion-ios-arrow-back" ng-click="hideItems()"/>'
+              '<button class="button button-positive button-icon ion-ios-arrow-back" ng-click="hideItems()"/>' +
               '<h1 class="title">{{headerText}}</h1>' +
               '<button class="button button-positive button-icon ion-checkmark" ng-show="multiSelect" ng-click="validate()"/>' +
             '</ion-header-bar>' +
