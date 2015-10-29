@@ -18,7 +18,15 @@ angular.module("ionic-fancy-select", ["ionic"])
       if (attrs.templateUrl) {
         return "<ng-include src=\"'" + attrs.templateUrl + "'\"></ng-include>";
       } else {
-        return '<ion-list> <ion-item ng-click=showItems($event)> {{text}} <span class=item-note>{{noteText}} <img class={{noteImgClass}} ng-if="noteImg != null" src="{{noteImg}}"/> </span> </ion-item> </ion-list>';
+        return  '<ion-list>' + 
+                  '<ion-item ng-click=showItems($event)>' +
+                    '{{text}}' +
+                    '<span class=item-note>' +
+                      '{{noteText}}' +
+                      '<img class={{noteImgClass}} ng-if="noteImg != null" src="{{noteImg}}"/>' +
+                    '</span>' +
+                  '</ion-item>' +
+                '</ion-list>';
       }
     },
 
@@ -52,7 +60,7 @@ angular.module("ionic-fancy-select", ["ionic"])
       // The modal properties
       scope.modalTemplateUrl = attrs.modalTemplateUrl;
       scope.modalAnimation = attrs.modalAnimation;
-      
+
       // Note properties
       scope.noteImg = attrs.noteImg || "";
       scope.noteText = attrs.noteText || "";
@@ -76,7 +84,24 @@ angular.module("ionic-fancy-select", ["ionic"])
 
       } else {
         scope.modal = $ionicModal.fromTemplate(
-          '<ion-modal-view> <ion-header-bar class="bar-positive"> <button class="button button-positive button-icon ion-ios-arrow-back" ng-click="hideItems()"/> <h1 class="title">{{headerText}}</h1> <button class="button button-positive button-icon ion-checkmark" ng-show="multiSelect" ng-click="validate()"/> </ion-header-bar> <ion-content> <ion-list> <ion-item class="item-checkbox" ng-if="multiSelect" ng-repeat="item in items"> <label class="checkbox"> <input type="checkbox" ng-checked="item.checked" ng-model="item.checked"> </label>{{item.Name}}</ion-item> <label class="item" ng-click="validate(item)" ng-if="!multiSelect" ng-repeat="item in items">{{item.Name}}</label> </div></ion-content></ion-modal-view>',
+          '<ion-modal-view>' +
+            '<ion-header-bar class="bar-positive">' +
+              '<button class="button button-positive button-icon ion-ios-arrow-back" ng-click="hideItems()"/>'
+              '<h1 class="title">{{headerText}}</h1>' +
+              '<button class="button button-positive button-icon ion-checkmark" ng-show="multiSelect" ng-click="validate()"/>' +
+            '</ion-header-bar>' +
+            '<ion-content>' +
+            '<ion-list>' +
+              '<ion-item class="item-checkbox" ng-if="multiSelect" ng-repeat="item in items">' +
+                '<label class="checkbox"> <input type="checkbox" ng-checked="item.checked" ng-model="item.checked">' +
+                '</label>' +
+                '{{item.Name}}' +
+              '</ion-item>' +
+              '<label class="item" ng-click="validate(item)" ng-if="!multiSelect" ng-repeat="item in items">' +
+                '{{item.Name}}' +
+              '</label>' +
+            '</ion-content>' +
+          '</ion-modal-view>',
           {
             scope: scope,
             animation: scope.modalAnimation
@@ -88,15 +113,15 @@ angular.module("ionic-fancy-select", ["ionic"])
       scope.$on("$destroy", function() {
         scope.modal.remove();
       });
-      
+
       scope.getItemText = function(item) {
         return scope.textProperty ? item[scope.textProperty] : item;
       };
-      
+
       scope.getItemValue = function(item) {
         return scope.valueProperty ? item[scope.valueProperty] : item;
       };
-      
+
       // Gets the text for the specified values
       scope.getText = function(value) {
         // Push the values into a temporary array so that they can be iterated through
@@ -118,11 +143,11 @@ angular.module("ionic-fancy-select", ["ionic"])
               }
             }
           });
-          
+
         } else {
           // Just use the default text
           text = scope.defaultText;
-          
+
         }
 
         // If a callback has been specified for the text
@@ -133,11 +158,11 @@ angular.module("ionic-fancy-select", ["ionic"])
       scope.hideItems = function(event) {
         scope.modal.hide();
       };
-      
+
       // Raised by watch when the value changes
       scope.onValueChanged = function(newValue, oldValue) {
         scope.text = scope.getText(newValue);
-        
+
         // Notify subscribers that the value has changed
         scope.valueChangedCallback({value: newValue});
       };
@@ -145,16 +170,16 @@ angular.module("ionic-fancy-select", ["ionic"])
       // Shows the list
       scope.showItems = function(event) {
         event.preventDefault(); // Prevent the event from bubbling
-        
+
         // For multi-select, make sure we have an up-to-date list of checked items
         if (scope.multiSelect) {
           // Clone the list of values, as we'll splice them as we go through to reduce loops
           var values = scope.value ? angular.copy(scope.value) : [];
-          
+
           angular.forEach(scope.items, function(item, key) {
             // Not checked by default
             item[scope.checkedProperty] = false;
-            
+
             var val = scope.getItemValue(item);
             for (var i = 0; i < values.length; i++) {
               if (val === values[i]) {
@@ -191,7 +216,7 @@ angular.module("ionic-fancy-select", ["ionic"])
 
         scope.hideItems();
       };
-      
+
       // Watch the value property, as this is used to build the text
       scope.$watch(function(){return scope.value;}, scope.onValueChanged, true);
     }
@@ -200,4 +225,3 @@ angular.module("ionic-fancy-select", ["ionic"])
 
 ;
 }());
-
