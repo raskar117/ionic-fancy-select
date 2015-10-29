@@ -95,10 +95,10 @@ angular.module("ionic-fancy-select", ["ionic"])
               '<ion-item class="item-checkbox" ng-if="multiSelect" ng-repeat="item in items">' +
                 '<label class="checkbox"> <input type="checkbox" ng-checked="item.checked" ng-model="item.checked">' +
                 '</label>' +
-                '{{item.Name}}' +
+                '{{getItemText(item)}}' +
               '</ion-item>' +
               '<label class="item" ng-click="validate(item)" ng-if="!multiSelect" ng-repeat="item in items">' +
-                '{{item.Name}}' +
+                '{{getItemText(item)}}' +
               '</label>' +
             '</ion-content>' +
           '</ion-modal-view>',
