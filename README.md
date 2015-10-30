@@ -19,15 +19,16 @@ This is the implimentation of the concept described in
 <fancy-select
   header-text="Select an option"
   items="items"
-  value="selected"
+  ng-required="boolean"
+  ng-model="selected"
   icon-property="icon"
   value-property="id"
   text-property="id"
   allow-empty='true'
   multi-select="true"
   text="Nothing selected"
-  modal-template-url="lib/ionic-fancy-select/templates/fancy-select-modal-template.html"
-  template-url="lib/ionic-fancy-select/templates/item-template.html"
+  modal-template-url="path/to/modalTemplate.html"
+  template-url="path/to/template.html"
   note-text="A Note text"
   note-img="img/foo.png"
   note-img-class="icon"
@@ -50,7 +51,7 @@ header bar.
 * Type: Array
 * A list of items that is bound to the select.
 
-#### value
+#### ng-model
 * Type: Array or Object
 * The currently selected item. If [mult-select](#multi-select) is set to true, an array is returned containg a list of all the values, otherwise a single value is returned.
 

@@ -6,11 +6,13 @@
 
 angular.module("ionic-fancy-select", ["ionic"])
 
-.directive("fancySelect", function($ionicModal) {
+.constant('_', _)
+
+.directive("fancySelect", function($ionicModal, _) {
   return {
     // Only use as <fancy-select> tag
     restrict: "E",
-
+    require: '?ngModel',
     /* The default template
      * this uses the default "id" and "text" properties
      */
@@ -21,9 +23,9 @@ angular.module("ionic-fancy-select", ["ionic"])
         return  '<ion-list>' +
                   '<ion-item ng-click=showItems($event)>' +
                     '{{text}}' +
-                    '<span class=item-note>' +
+                    '<span class="item-note" ng-if="!defaultText || ngModel">' +
                       '{{noteText}}' +
-                      '<img class={{noteImgClass}} ng-if="noteImg != null" src="{{noteImg}}"/>' +
+                      '<img class="{{noteImgClass}}" ng-if="noteImg != null" src="{{noteImg}}"/>' +
                     '</span>' +
                   '</ion-item>' +
                 '</ion-list>';
@@ -39,7 +41,7 @@ angular.module("ionic-fancy-select", ["ionic"])
     },
 
     // Hook up the directive
-    link: function(scope, element, attrs) {
+    link: function(scope, element, attrs, ctrl) {
       // Default values
       scope.multiSelect = attrs.multiSelect === 'true' ? true : false;
       scope.allowEmpty = attrs.allowEmpty === 'false' ? false : true;
@@ -159,9 +161,19 @@ angular.module("ionic-fancy-select", ["ionic"])
         scope.modal.hide();
       };
 
+      scope.$on('modal.hidden', function() {
+        if(ctrl) {
+          ctrl.$setTouched(true);
+        }
+      });
+
       // Raised by watch when the value changes
       scope.onValueChanged = function(newValue, oldValue) {
         scope.text = scope.getText(newValue);
+
+        if(ctrl) {
+          ctrl.$setValidity('required', !_.isEmpty(newValue));
+        }
 
         // Notify subscribers that the value has changed
         scope.valueChangedCallback({value: newValue});
@@ -174,7 +186,7 @@ angular.module("ionic-fancy-select", ["ionic"])
         // For multi-select, make sure we have an up-to-date list of checked items
         if (scope.multiSelect) {
           // Clone the list of values, as we'll splice them as we go through to reduce loops
-          var values = scope.value ? angular.copy(scope.value) : [];
+          var values = scope.ngModel ? angular.copy(scope.ngModel) : [];
 
           angular.forEach(scope.items, function(item, key) {
             // Not checked by default
@@ -198,19 +210,19 @@ angular.module("ionic-fancy-select", ["ionic"])
       scope.validate = function(item) {
         if (scope.multiSelect) {
           // Need to scan the list for selected items and push them into the value list
-          scope.value = [];
+          scope.ngModel= [];
 
           if (scope.items) {
             angular.forEach(scope.items, function(item, key) {
               if (item[scope.checkedProperty]) {
-                scope.value[scope.value.length] = scope.getItemValue(item);
+                scope.ngModel[scope.ngModel.length] = scope.getItemValue(item);
               }
             });
           }
 
         } else {
           // Just use the current item
-          scope.value = scope.getItemValue(item);
+          scope.ngModel= scope.getItemValue(item);
 
         }
 
@@ -218,7 +230,7 @@ angular.module("ionic-fancy-select", ["ionic"])
       };
 
       // Watch the value property, as this is used to build the text
-      scope.$watch(function(){return scope.value;}, scope.onValueChanged, true);
+      scope.$watch(function(){return scope.ngModel;}, scope.onValueChanged, true);
     }
   };
 })
