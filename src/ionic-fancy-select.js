@@ -6,9 +6,7 @@
 
 angular.module("ionic-fancy-select", ["ionic"])
 
-.constant('_', _)
-
-.directive("fancySelect", function($ionicModal, _) {
+.directive("fancySelect", function($ionicModal) {
   return {
     // Only use as <fancy-select> tag
     restrict: "E",
@@ -146,10 +144,14 @@ angular.module("ionic-fancy-select", ["ionic"])
             }
           });
 
+        } else if (scope.value.length && !value){
+          //Concatenate the list of items previously selected
+          angular.forEach(scope.value, function(item, key) {
+              text += (text.length ? ", " : "") + item;
+          })
         } else {
-          // Just use the default text
-          text = scope.defaultText;
-
+            // Just use the default text
+            text = scope.defaultText;
         }
 
         // If a callback has been specified for the text
@@ -172,7 +174,7 @@ angular.module("ionic-fancy-select", ["ionic"])
         scope.text = scope.getText(newValue);
 
         if(ctrl) {
-          ctrl.$setValidity('required', !_.isEmpty(newValue));
+          //ctrl.$setValidity('required', !_.isEmpty(newValue));
         }
 
         // Notify subscribers that the value has changed
@@ -182,12 +184,10 @@ angular.module("ionic-fancy-select", ["ionic"])
       // Shows the list
       scope.showItems = function(event) {
         event.preventDefault(); // Prevent the event from bubbling
-
         // For multi-select, make sure we have an up-to-date list of checked items
         if (scope.multiSelect) {
           // Clone the list of values, as we'll splice them as we go through to reduce loops
-          var values = scope.ngModel ? angular.copy(scope.ngModel) : [];
-
+          var values = scope.ngModel ? angular.copy(scope.ngModel) : (scope.value ? angular.copy(scope.value) : []) ;
           angular.forEach(scope.items, function(item, key) {
             // Not checked by default
             item[scope.checkedProperty] = false;
