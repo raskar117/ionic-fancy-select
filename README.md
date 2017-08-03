@@ -5,6 +5,8 @@
 This is the implimentation of the concept described in
 [Cool Select with ionic](http://codepen.io/mhartington/pen/CImqy?editors=101) by Mike Hartington
 
+-> This fork is intended to add recovering of items previously selected, in order to be able to save a selection and to edit it back after saving it in a form for example.
+
 ## Installation
 
 - Install via bower: `bower install --save`
